@@ -1,0 +1,7 @@
+name: ai-customer-support-agent
+version: "1.0"
+description: AI-powered customer support agent
+entrypoint: inference.py
+environment:
+  API_BASE_URL: "https://router.huggingface.co/v1"
+  MODEL_NAME: "Qwen/Qwen2.5-72B-Instruct"

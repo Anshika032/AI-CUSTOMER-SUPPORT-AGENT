@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "ai-customer-support-agent"
+version = "1.0.0"
+description = "AI-powered customer support agent"
+requires-python = ">=3.10"
+dependencies = [
+    "openenv-core>=0.2.0",
+    "streamlit>=1.32.0",
+    "python-dotenv",
+    "openai",
+    "requests",
+]
+
+[project.scripts]
+server = "server.app:main"
