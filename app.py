@@ -1,10 +1,8 @@
 import os
-import subprocess
 import sys
 import time
 
 import pandas as pd
-import requests
 import streamlit as st
 
 sys.path.append(os.path.dirname(__file__))
@@ -16,13 +14,9 @@ load_dotenv()
 try:
     from backend_service import get_reasoning, process_query
 except Exception as e:
-    import streamlit as st
-
     st.error(f"Import failed: {e}")
     raise
 
-
-API_URL = "http://127.0.0.1:8000"
 
 analytics = {
     "total_queries": 0,
@@ -209,50 +203,25 @@ st.markdown(
 )
 
 
-def _api_is_live():
-    try:
-        response = requests.get(f"{API_URL}/health", timeout=1.5)
-        return response.ok
-    except requests.RequestException:
-        return False
-
-
 @st.cache_resource
 def ensure_api_server():
-    if _api_is_live():
-        return True
-
-    subprocess.Popen(
-        [
-            sys.executable,
-            "-m",
-            "uvicorn",
-            "api:app",
-            "--host",
-            "127.0.0.1",
-            "--port",
-            "8000",
-        ],
-        cwd=os.path.dirname(__file__),
-    )
-
-    for _ in range(30):
-        if _api_is_live():
-            return True
-        time.sleep(1)
-
-    return False
+    # No subprocess on HuggingFace — use direct backend calls
+    return True
 
 
 def call_backend(query, agent_type):
-    payload = {"user_input": query, "agent_type": agent_type, "user_id": "guest"}
-
     try:
-        response = requests.post(f"{API_URL}/chat", json=payload, timeout=20)
-        response.raise_for_status()
-        return response.json(), True
-    except requests.RequestException:
-        return process_query(query, agent_type), False
+        result = process_query(query, agent_type)
+        return result, False
+    except Exception as e:
+        return {
+            "response": f"I'm here to help with your support request. (Error: {e})",
+            "intent": "general query",
+            "sentiment": "NEUTRAL",
+            "department": "Support Team",
+            "reward": 0,
+            "action": "GENERAL",
+        }, False
 
 
 def typing_effect(text):
@@ -290,9 +259,6 @@ if "action_history" not in st.session_state:
 
 if "latest_reward" not in st.session_state:
     st.session_state.latest_reward = 0
-
-if not st.session_state.messages:
-    st.session_state.messages = []
 
 st.session_state.backend_ready = ensure_api_server()
 
@@ -347,7 +313,6 @@ def show_chat():
         st.session_state.messages.append(("user", user_input))
 
         start = time.time()
-
         result, used_api = call_backend(user_input, agent_type)
         end = time.time()
 
@@ -360,7 +325,7 @@ def show_chat():
         else:
             analytics["resolved"] += 1
 
-        response = result.get("response", "I’m here to help with your support request.")
+        response = result.get("response", "I'm here to help with your support request.")
         intent = result.get("intent", "general query")
         sentiment = result.get("sentiment", result.get("ai_sentiment", "NEUTRAL"))
         department = result.get("department", "Support Team")
@@ -384,9 +349,6 @@ def show_chat():
                 },
             )
         )
-
-        if not used_api:
-            st.info("Running in simulation mode.")
 
     for role, msg in st.session_state.messages:
         if role == "user":
