@@ -7,7 +7,19 @@ import pandas as pd
 import requests
 import streamlit as st
 
-from backend_service import get_reasoning, process_query
+sys.path.append(os.path.dirname(__file__))
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+try:
+    from backend_service import get_reasoning, process_query
+except Exception as e:
+    import streamlit as st
+
+    st.error(f"Import failed: {e}")
+    raise
 
 
 API_URL = "http://127.0.0.1:8000"
