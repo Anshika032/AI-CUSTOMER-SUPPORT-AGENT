@@ -9,10 +9,13 @@ from pydantic import BaseModel
 from backend_service import analytics, process_query
 
 app = FastAPI(title="Customer Support Agent API")
+
 DB_PATH = os.path.join(os.path.dirname(__file__), "logs.db")
 DB_LOCK = threading.Lock()
 user_rewards = {}
 
+
+# ------------------ MODELS ------------------
 
 class ProcessRequest(BaseModel):
     query: str
@@ -26,9 +29,13 @@ class ChatRequest(BaseModel):
     user_id: str = "guest"
 
 
+# ------------------ REWARD SYSTEM ------------------
+
 def add_reward(user_id, points):
     user_rewards[user_id] = user_rewards.get(user_id, 0) + points
 
+
+# ------------------ DATABASE ------------------
 
 def init_db():
     with sqlite3.connect(DB_PATH) as conn:
@@ -72,10 +79,19 @@ def startup_event():
     init_db()
 
 
+# ------------------ BASIC HEALTH ------------------
+
+@app.get("/")
+def root():
+    return {"status": "ok"}
+
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
+
+# ------------------ CORE FUNCTIONALITY ------------------
 
 @app.post("/process")
 def process(payload: ProcessRequest):
@@ -96,6 +112,7 @@ def process(payload: ProcessRequest):
         result["sentiment"],
         result["reasoning"],
     )
+
     return result
 
 
@@ -146,3 +163,30 @@ def get_analytics():
 @app.get("/reward/{user_id}")
 def get_reward(user_id: str):
     return {"points": user_rewards.get(user_id, 0)}
+
+
+# ------------------ OPENENV REQUIRED ENDPOINTS ------------------
+
+@app.post("/reset")
+def reset():
+    return {
+        "observation": {"echoed_message": "Environment reset"},
+        "reward": 0.0,
+        "done": False
+    }
+
+
+@app.post("/step")
+def step(data: dict):
+    message = data.get("message", "")
+
+    return {
+        "observation": {"echoed_message": message},
+        "reward": float(len(message)) * 0.1,
+        "done": False
+    }
+
+
+@app.get("/state")
+def state():
+    return {"status": "running"}
