@@ -1,7 +1,21 @@
 name: ai-customer-support-agent
 version: "1.0"
 description: AI-powered customer support agent
-entrypoint: inference.py
-environment:
-  API_BASE_URL: "https://router.huggingface.co/v1"
-  MODEL_NAME: "Qwen/Qwen2.5-72B-Instruct"
+
+tasks:
+  - name: handle-complaint
+    description: Handle a customer complaint
+    max_steps: 8
+
+  - name: handle-refund
+    description: Process a refund request
+    max_steps: 8
+
+  - name: handle-inquiry
+    description: Answer a product inquiry
+    max_steps: 8
+
+endpoints:
+  reset: /reset
+  step: /step
+  state: /state
