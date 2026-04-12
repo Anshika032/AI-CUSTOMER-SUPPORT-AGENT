@@ -1,36 +1,24 @@
-import asyncio
 import os
-from typing import List, Optional
+import requests
 from openai import OpenAI
 
-from my_env_v4 import MyEnvV4Action, MyEnvV4Env
-
-IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
-API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-TASK_NAME = os.getenv("TASK_NAME", "customer-support")
-BENCHMARK = os.getenv("BENCHMARK", "my_env_v4")
+API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY", "dummy")
+SPACE_URL = os.getenv("SPACE_URL", "https://anshika032-ai-customer-support-agent.hf.space")
+
+TASKS = ["handle-complaint", "handle-refund", "handle-inquiry"]
 MAX_STEPS = 8
 
 SYSTEM_PROMPT = """
-You are an AI customer support agent. 
+You are an AI customer support agent.
 Help users with their queries professionally and concisely.
 Reply with a helpful response to the customer's message.
 """
 
-def log_start(task, env, model):
-    print(f"[START] task={task} env={env} model={model}", flush=True)
+client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
 
-def log_step(step, action, reward, done, error):
-    error_val = error if error else "null"
-    print(f"[STEP] step={step} action={action} reward={reward:.2f} done={str(done).lower()} error={error_val}", flush=True)
-
-def log_end(success, steps, score, rewards):
-    rewards_str = ",".join(f"{r:.2f}" for r in rewards)
-    print(f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}", flush=True)
-
-def get_response(client, message):
+def get_response(message):
     try:
         completion = client.chat.completions.create(
             model=MODEL_NAME,
@@ -42,49 +30,42 @@ def get_response(client, message):
         )
         return (completion.choices[0].message.content or "").strip()
     except Exception as e:
-        print(f"[DEBUG] Error: {e}", flush=True)
         return "I'm here to help. Could you please provide more details?"
 
-async def main():
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
-    env = await MyEnvV4Env.from_docker_image(IMAGE_NAME)
-
+def run_task(task_name):
+    res = requests.post(f"{SPACE_URL}/reset")
+    data = res.json()
+    session_id = data.get("session_id", "default")
+    observation = data.get("observation", "Hello! How can I help you?")
     rewards = []
-    steps_taken = 0
     score = 0.0
-    success = False
 
-    log_start(task=TASK_NAME, env=BENCHMARK, model=MODEL_NAME)
+    print(f"[START] task={task_name} env=ai-customer-support model={MODEL_NAME}", flush=True)
 
-    try:
-        result = await env.reset()
-        
-        for step in range(1, MAX_STEPS + 1):
-            if result.done:
-                break
+    for step in range(1, MAX_STEPS + 1):
+        action = get_response(observation)
 
-            message = get_response(client, str(result.observation))
-            result = await env.step(MyEnvV4Action(message=message))
+        step_res = requests.post(f"{SPACE_URL}/step", json={
+            "action": action,
+            "session_id": session_id
+        }).json()
 
-            reward = result.reward or 0.0
-            rewards.append(reward)
-            steps_taken = step
+        reward = float(step_res.get("reward", 0.0))
+        done = step_res.get("done", False)
+        error = step_res.get("error", None)
+        score = float(step_res.get("score", 0.0))
+        observation = step_res.get("observation", "")
+        rewards.append(reward)
 
-            log_step(step=step, action=message, reward=reward, done=result.done, error=None)
+        print(f"[STEP] step={step} action={action} reward={reward:.2f} done={str(done).lower()} error={error or 'null'}", flush=True)
 
-            if result.done:
-                break
+        if done:
+            break
 
-        score = sum(rewards) / (MAX_STEPS * 10) if rewards else 0.0
-        score = min(max(score, 0.0), 1.0)
-        success = score >= 0.1
-
-    finally:
-        try:
-            await env.close()
-        except Exception as e:
-            print(f"[DEBUG] env.close() error: {e}", flush=True)
-        log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
+    success = score >= 0.1
+    rewards_str = ",".join(f"{r:.2f}" for r in rewards)
+    print(f"[END] success={str(success).lower()} steps={len(rewards)} score={score:.2f} rewards={rewards_str}", flush=True)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    for task in TASKS:
+        run_task(task)
