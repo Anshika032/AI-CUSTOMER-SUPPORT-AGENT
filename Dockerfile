@@ -1,6 +1,10 @@
-FROM python:3.10
+FROM python:3.10-slim
+
 WORKDIR /app
 COPY . .
-RUN pip install --no-cache-dir -r requirements.txt
+
+RUN pip install --no-cache-dir fastapi uvicorn
+
 EXPOSE 7860
-CMD ["streamlit", "run", "app.py", "--server.port=7860", "--server.address=0.0.0.0"]
+
+CMD ["bash", "start.sh"]
