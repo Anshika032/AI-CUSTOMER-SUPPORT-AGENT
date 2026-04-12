@@ -3,3 +3,6 @@ requests
 python-dotenv
 openai
 setuptools>=65.0.0
+fastapi
+uvicorn
+pydantic
