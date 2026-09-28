@@ -23,3 +23,5 @@ AI-powered customer support system with real-time intent detection, sentiment an
 - ## 🧠 Architecture
 
 User Query → Intent Detection → Sentiment Analysis → Agent Decision → Response Generation
+<img width="956" height="470" alt="image" src="https://github.com/user-attachments/assets/b511dc13-3218-4feb-aa70-f47b6f057b0f" />
+
