@@ -2,8 +2,6 @@
 
 🚀 Live Demo: https://ai-customer-support-agent-7mtkhpwe77fdbw9bdhcagq.streamlit.app/
 
-# 🤖 AI Customer Support Agent
-
 An AI-powered customer support system that understands customer queries, detects their intent and emotional state, identifies potential churn signals, retrieves relevant information using **Retrieval-Augmented Generation (RAG)**, and uses a **Large Language Model (LLM)** to generate context-aware responses.
 
 The system combines **Hugging Face NLP models, RAG, LLM-based response generation, FastAPI, and Streamlit** to create an intelligent customer-support workflow.
