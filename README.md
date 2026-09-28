@@ -520,11 +520,6 @@ Retrieval-Augmented Generation
 Edge AI
 Intelligent Systems
 
-### One important correction
-
-I would **not** put claims like *“95% accuracy”*, *“reduces support cost by 60%”*, *“production-ready”*, or similar metrics in your README unless you actually measured them. Your current README is based on the features you actually implemented rather than invented performance numbers. 
-
-Also, because you specifically used **Hugging Face**, I've made that a central part of the
 <img width="956" height="470" alt="Screenshot 2026-09-28 152125" src="https://github.com/user-attachments/assets/e504d8a9-7537-40dd-8fde-7d0e26f9ab94" />
 
 
