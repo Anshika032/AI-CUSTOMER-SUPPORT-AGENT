@@ -2,183 +2,279 @@
 
 🚀 Live Demo: https://ai-customer-support-agent-7mtkhpwe77fdbw9bdhcagq.streamlit.app/
 
-An AI-powered customer support system that analyzes customer queries, identifies their intent and sentiment, generates appropriate responses, and routes the issue to the relevant support department.
+# 🤖 AI Customer Support Agent
 
-The system combines **NLP, Hugging Face models, OpenAI-based response generation, FastAPI, and Streamlit** to provide an interactive customer-support experience.
+An AI-powered customer support system that understands customer queries, detects their intent and emotional state, identifies potential churn signals, retrieves relevant information using **Retrieval-Augmented Generation (RAG)**, and uses a **Large Language Model (LLM)** to generate context-aware responses.
+
+The system combines **Hugging Face NLP models, RAG, LLM-based response generation, FastAPI, and Streamlit** to create an intelligent customer-support workflow.
 
 ---
 
 ## 🚀 Overview
 
-Traditional customer-support systems often rely on predefined rules and manual ticket routing. This project uses AI to understand customer messages and automatically determine:
+Traditional customer-support systems often depend on predefined rules or manual ticket routing. This project uses AI and NLP to understand customer conversations and automatically determine how a support request should be handled.
 
-- What the customer is asking about
-- Whether the customer is satisfied, neutral, frustrated, or angry
-- Which department should handle the issue
-- Whether the conversation contains potential churn/cancellation signals
-- What response should be provided to the customer
+The system can:
 
-The goal is to reduce manual support effort while providing faster and more context-aware responses.
+- Understand customer queries
+- Classify customer intent
+- Analyze sentiment and emotion
+- Detect frustration and anger
+- Identify potential churn/cancellation signals
+- Retrieve relevant information using RAG
+- Generate context-aware responses using an LLM
+- Route issues toward the appropriate support category
+- Escalate situations that require additional attention
 
----
-
-## ✨ Key Features
-
-### 🧠 Intent Detection
-
-The system identifies the primary intent behind a customer message.
-
-Supported intent categories include:
-
-- Payment Problem
-- Hardware Problem
-- Software Bug
-- Refund Issue
-- General Question
-
-Intent detection is implemented using **Hugging Face NLP models**.
+The objective is to make customer support **faster, more intelligent, and more context-aware**.
 
 ---
 
-### 😊 Sentiment & Emotion Analysis
+# ✨ Key Features
 
-The system analyzes the emotional tone of the customer's message.
+## 🧠 1. Intent Detection
+
+The system analyzes the customer's message and identifies the type of issue being reported.
+
+Examples include:
+
+- Payment problems
+- Hardware problems
+- Software bugs
+- Refund-related issues
+- General questions
+
+Intent detection allows the system to determine how the customer's request should be handled.
+
+---
+
+## 😊 2. Sentiment & Emotion Analysis
+
+The system analyzes the emotional tone of customer messages using NLP models.
 
 It can identify signals such as:
 
 - Neutral
 - Frustrated
 - Angry
-- Positive
 
-This allows the system to adapt its response according to the customer's emotional state.
-
----
-
-### 💬 AI Response Generation
-
-The agent generates customer-support responses based on the detected intent and sentiment.
-
-Responses can be enhanced using an AI language model through the configured API integration.
-
-The objective is to produce responses that are:
-
-- Relevant to the customer's issue
-- Context-aware
-- Professional
-- Appropriate to the customer's sentiment
-
----
-
-### 🚨 Churn-Risk Detection
-
-The system checks customer messages for signals indicating possible cancellation or dissatisfaction.
-
-Examples of signals include:
-
-- Cancellation requests
-- Repeated complaints
-- Strong dissatisfaction
-- Switching to another service
-
-When such signals are detected, the system can generate an appropriate retention-oriented response or escalation.
-
----
-
-### 🏢 Department Routing
-
-Based on the detected intent, the system identifies the appropriate support area.
+This information is used to make the generated response more appropriate to the customer's situation.
 
 For example:
 
-| Customer Query | Detected Intent | Department |
-|---|---|---|
-| "I was charged twice" | Payment Problem | Billing |
-| "My device is not turning on" | Hardware Problem | Technical Support |
-| "The application keeps crashing" | Software Bug | Technical Support |
-| "I want my money back" | Refund Issue | Refunds |
-| "How can I change my account details?" | General Question | General Support |
+```text
+Customer:
+"I have contacted support three times and nobody has fixed this!"
 
----
+Emotion:
+Frustrated / Angry
 
-### 🖥️ Interactive Streamlit Interface
+The system can then generate a more empathetic response instead of treating the message like a normal FAQ request.
 
-The project provides an interactive chat interface using **Streamlit**.
+🚨 3. Churn-Risk Detection
+
+The system identifies customer messages that may indicate dissatisfaction, cancellation intent, or potential churn.
+
+Examples of signals include:
+
+"I want to cancel my subscription."
+
+"I am switching to another service."
+
+"This is the third time I have complained."
+
+"I don't want to use your service anymore."
+
+When such signals are detected, the system can trigger an appropriate retention or escalation response.
+
+🔍 4. Retrieval-Augmented Generation (RAG)
+
+The project uses Retrieval-Augmented Generation (RAG) to improve the quality and relevance of AI-generated responses.
+
+Instead of relying only on the LLM's pretrained knowledge, the system retrieves relevant information from the available support knowledge base and provides that information as context to the LLM.
+
+RAG Pipeline
+Customer Query
+      │
+      ▼
+Query Processing
+      │
+      ▼
+Relevant Knowledge Retrieval
+      │
+      ▼
+Retrieved Context
+      │
+      ▼
+Context + Customer Query
+      │
+      ▼
+LLM
+      │
+      ▼
+Context-Aware Support Response
+
+This allows the agent to generate responses that are grounded in relevant support information.
+
+🤖 5. Large Language Model (LLM)
+
+An LLM is used to generate natural-language customer-support responses.
+
+The LLM receives information such as:
+
+Original customer query
+Retrieved RAG context
+Detected intent
+Sentiment/emotion information
+Churn-related signals
+
+and generates a response appropriate to the customer's issue.
+
+Conceptual Flow
+                 ┌──────────────────┐
+Customer Query ──►                  │
+                 │                  │
+RAG Context ─────►       LLM        ├──► AI Response
+                 │                  │
+Intent ──────────►                  │
+                 │                  │
+Sentiment ───────►                  │
+                 └──────────────────┘
+🏢 6. Support Routing & Escalation
+
+After analyzing the customer message, the system determines the appropriate support path.
+
+For example:
+
+Customer Query	Intent	Support Action
+"I was charged twice."	Payment Problem	Billing Support
+"My device isn't turning on."	Hardware Problem	Technical Support
+"The application keeps crashing."	Software Bug	Technical Support
+"I want my money back."	Refund Issue	Refund Support
+"I want to cancel my subscription."	Cancellation / Churn Signal	Retention / Escalation
+
+This creates a workflow where the AI agent can handle straightforward requests while identifying situations that require escalation.
+
+🖥️ 7. Interactive Streamlit Interface
+
+The project includes a Streamlit-based interface for interacting with the AI customer-support agent.
 
 The interface allows users to:
 
-- Enter customer queries
-- View AI-generated responses
-- See detected intent
-- View sentiment/emotion analysis
-- View support routing information
-- Adjust chat font size using the built-in font-size control
+Enter customer queries
+Interact with the AI support agent
+View generated responses
+Analyze customer intent
+View sentiment/emotion information
+Identify potential churn signals
+Receive context-aware support responses
+🏗️ System Architecture
+                         ┌─────────────────────┐
+                         │      Customer       │
+                         │       Query         │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ Streamlit Interface │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │   FastAPI Backend   │
+                         └──────────┬──────────┘
+                                    │
+                  ┌─────────────────┼─────────────────┐
+                  │                 │                 │
+                  ▼                 ▼                 ▼
+          ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+          │ Intent       │  │ Sentiment /  │  │ Churn Signal │
+          │ Detection    │  │ Emotion      │  │ Detection    │
+          └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+                 │                 │                 │
+                 └─────────────────┼─────────────────┘
+                                   │
+                                   ▼
+                         ┌─────────────────────┐
+                         │   RAG Pipeline      │
+                         │                     │
+                         │ Query → Retrieval   │
+                         │ → Context           │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │        LLM          │
+                         │ Response Generation │
+                         └──────────┬──────────┘
+                                    │
+                                    ▼
+                         ┌─────────────────────┐
+                         │ Support Response &  │
+                         │ Routing / Escalation│
+                         └─────────────────────┘
+🔄 End-to-End Workflow
+Step 1 — Customer Query
 
----
+The customer enters a question, complaint, or support request.
 
-## 🏗️ System Architecture
+Example:
 
-```text
-                    ┌─────────────────────┐
-                    │      Customer       │
-                    │       Query         │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │  Streamlit Frontend │
-                    │   Chat Interface    │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │    FastAPI Backend  │
-                    └──────────┬──────────┘
-                               │
-                ┌──────────────┼──────────────┐
-                ▼              ▼              ▼
-        ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
-        │ Intent       │ │ Sentiment /  │ │ Churn Signal │
-        │ Detection    │ │ Emotion      │ │ Detection    │
-        └──────┬───────┘ └──────┬───────┘ └──────┬───────┘
-               │                │                │
-               └────────────────┼────────────────┘
-                                ▼
-                     ┌─────────────────────┐
-                     │   AI Response       │
-                     │   Generation        │
-                     └──────────┬──────────┘
-                                │
-                                ▼
-                     ┌─────────────────────┐
-                     │ Department /        │
-                     │ Support Routing     │
-                     └──────────┬──────────┘
-                                │
-                                ▼
-                     ┌─────────────────────┐
-                     │ Response to Customer│
-                     └─────────────────────┘
+"I was charged twice for my subscription and I am extremely frustrated."
+Step 2 — Query Analysis
+
+The system analyzes the message using NLP.
+
+It determines:
+
+Intent       → Payment Problem
+Emotion      → Frustrated
+Churn Signal → Possible
+Step 3 — Knowledge Retrieval
+
+The query is passed through the RAG pipeline.
+
+Relevant information from the support knowledge base is retrieved.
+
+Step 4 — Context Construction
+
+The retrieved information is combined with the customer's original query and the results of the NLP analysis.
+
+Step 5 — LLM Response Generation
+
+The LLM uses the retrieved context and customer information to generate an appropriate response.
+
+Step 6 — Routing / Escalation
+
+The system identifies the appropriate support category and determines whether additional escalation or retention handling may be required.
+
+Step 7 — Response
+
+The final AI-generated response is presented to the customer through the Streamlit interface.
+
 🛠️ Technology Stack
-Programming Language
+Programming
 Python
-AI / NLP
+AI / Machine Learning
+Large Language Models (LLMs)
+Retrieval-Augmented Generation (RAG)
+Natural Language Processing (NLP)
 Hugging Face
-Hugging Face Transformers / NLP models
-OpenAI API
-Sentiment Analysis
+Hugging Face Transformers
 Intent Classification
-Natural Language Processing
+Sentiment Analysis
+Emotion Detection
+Churn-Risk Detection
+Context-Aware Response Generation
 Backend
 FastAPI
-Uvicorn
-REST API
+REST APIs
 Frontend
 Streamlit
-Environment & Configuration
-Python-dotenv
-Environment variables
-.gitignore for API credentials
+Supporting Tools
+Environment Variables
+API-based AI services
+Python Virtual Environment
 📂 Project Structure
 AI-CUSTOMER-SUPPORT-AGENT/
 │
@@ -190,206 +286,241 @@ AI-CUSTOMER-SUPPORT-AGENT/
 │
 └── .env
 
-.env is used locally for API credentials and should never be uploaded to GitHub.
-
-🔄 How It Works
-Step 1 — Customer enters a query
-
-The customer submits a support message through the Streamlit interface.
-
-Example:
-
-"I was charged twice for my subscription and I want a refund."
-Step 2 — Intent Detection
-
-The NLP model analyzes the query and determines the most relevant intent.
-
-Intent → Payment Problem / Refund Issue
-Step 3 — Sentiment Analysis
-
-The customer's emotional state is analyzed.
-
-Sentiment → Negative / Frustrated
-Step 4 — Churn Signal Detection
-
-The system checks whether the customer is showing signs of cancellation or dissatisfaction.
-
-Churn Risk → Possible
-Step 5 — AI Response Generation
-
-The detected information is used to generate an appropriate customer-support response.
-
-Step 6 — Support Routing
-
-The system determines the appropriate support department.
-
-Department → Billing / Refund Support
-Step 7 — Response
-
-The final response is displayed through the Streamlit interface.
+The .env file is used locally for API credentials and must not be committed to GitHub.
 
 🔐 Environment Variables
 
-Create a .env file in the project root:
+Create a .env file in the project root and add the required credentials used by your implementation.
+
+Example:
 
 HF_TOKEN=your_huggingface_token
 OPENAI_API_KEY=your_openai_api_key
-Important
+⚠️ Security
 
-Never commit your .env file to GitHub.
+Never upload API keys or access tokens to GitHub.
 
-Your .gitignore should contain:
+Your .gitignore should include:
 
 .env
 __pycache__/
 *.pyc
 ⚙️ Installation
-1. Clone the repository
-git clone https://github.com/Anshika032/AI-CUSTOMER-SUPPORT-AGENT.git
-2. Navigate to the project
+1. Clone the Repository
+git clone <YOUR_GITHUB_REPOSITORY_URL>
+2. Navigate to the Project
 cd AI-CUSTOMER-SUPPORT-AGENT
-3. Create a virtual environment
+3. Create a Virtual Environment
 python -m venv venv
-
-Activate it on Windows:
-
+Windows
 venv\Scripts\activate
-
-For macOS/Linux:
-
+macOS / Linux
 source venv/bin/activate
-4. Install dependencies
+4. Install Dependencies
 pip install -r requirements.txt
-5. Configure API keys
+5. Configure Environment Variables
 
-Create .env and add:
+Create the .env file and add the required API credentials.
 
-HF_TOKEN=your_huggingface_token
-OPENAI_API_KEY=your_openai_api_key
-▶️ Running the Application
+▶️ Running the Project
 Start the FastAPI Backend
 uvicorn main:app --reload
 
-The API will be available locally at:
+The backend will run locally on:
 
 http://127.0.0.1:8000
 
-FastAPI also provides interactive API documentation at:
+FastAPI's interactive API documentation can be accessed through:
 
 http://127.0.0.1:8000/docs
-Start the Streamlit Frontend
+Start the Streamlit Application
 
-In another terminal:
+Open another terminal and run:
 
 streamlit run app.py
 
-The Streamlit application will open in your browser.
+The Streamlit interface will then open in the browser.
 
-🧪 Example Queries
-Billing
+🧪 Example Customer Queries
+Payment Problem
 I was charged twice for my subscription.
 
-Expected analysis:
+Possible analysis:
 
-Intent: Payment Problem
-Sentiment: Negative
-Department: Billing
-Technical Issue
-My application keeps crashing whenever I try to log in.
+Intent       → Payment Problem
+Sentiment    → Negative
+Department   → Billing
+Software Issue
+The application keeps crashing whenever I try to log in.
 
-Expected analysis:
+Possible analysis:
 
-Intent: Software Bug
-Sentiment: Negative
-Department: Technical Support
+Intent       → Software Bug
+Sentiment    → Negative
+Department   → Technical Support
 Hardware Issue
 My device is not turning on even after charging it.
 
-Expected analysis:
+Possible analysis:
 
-Intent: Hardware Problem
-Department: Technical Support
-Refund
+Intent       → Hardware Problem
+Department   → Technical Support
+Refund Request
 I want a refund for my recent purchase.
 
-Expected analysis:
+Possible analysis:
 
-Intent: Refund Issue
-Department: Refund Support
+Intent       → Refund Issue
+Department   → Refund Support
+Churn Signal
+I am tired of these problems. I want to cancel my subscription.
+
+Possible analysis:
+
+Intent       → Cancellation
+Emotion      → Frustrated
+Churn Signal → High
+Action       → Retention / Escalation
 🎯 Project Objectives
 
-The project was developed with the following objectives:
+The project was developed to:
 
 Automate basic customer-support interactions.
-Use NLP to understand customer queries.
-Automatically classify customer intent.
-Detect customer sentiment and emotional signals.
-Identify potential churn/cancellation signals.
-Generate context-aware responses.
-Route customer issues to relevant departments.
-Provide an interactive support interface.
-🔮 Future Improvements
+Understand customer queries using NLP.
+Classify customer intent automatically.
+Analyze sentiment and emotional state.
+Detect potential churn and cancellation signals.
+Retrieve relevant information using RAG.
+Use an LLM to generate context-aware responses.
+Route support requests to relevant categories.
+Identify conversations that may require escalation.
+Provide an interactive AI-support experience.
+🧠 AI Pipeline
 
-Potential extensions include:
+The core intelligence of the system can be summarized as:
 
-Conversation memory for multi-turn conversations
-Customer profile integration
-Automatic ticket creation
-CRM integration
-Knowledge-base / RAG integration
-FAQ document retrieval
-Human-agent handoff
-Conversation analytics dashboard
-Support-ticket prioritization
-Multilingual customer support
-Voice-based customer support
-Production-scale deployment
-📌 Use Cases
+                 CUSTOMER MESSAGE
+                        │
+                        ▼
+                ┌───────────────┐
+                │ NLP Analysis  │
+                └───────┬───────┘
+                        │
+          ┌─────────────┼─────────────┐
+          ▼             ▼             ▼
+       Intent       Emotion        Churn
+      Detection     Analysis       Signal
+          │             │             │
+          └─────────────┼─────────────┘
+                        ▼
+               ┌────────────────┐
+               │ RAG Retrieval  │
+               └───────┬────────┘
+                       │
+                       ▼
+               Retrieved Context
+                       │
+                       ▼
+               ┌────────────────┐
+               │      LLM       │
+               └───────┬────────┘
+                       │
+                       ▼
+              AI Support Response
+                       │
+                       ▼
+             Routing / Escalation
+💡 Why RAG + LLM?
 
-This system can be adapted for:
+A traditional chatbot may generate responses based primarily on the model's pretrained knowledge.
+
+This project combines RAG and an LLM so that the response-generation process can incorporate relevant information retrieved from the support knowledge base.
+
+Without RAG
+Customer Query
+      ↓
+     LLM
+      ↓
+Generated Response
+With RAG
+Customer Query
+      ↓
+Knowledge Retrieval
+      ↓
+Relevant Context
+      ↓
+Context + Query
+      ↓
+     LLM
+      ↓
+Grounded Support Response
+
+This architecture is particularly useful for customer-support systems where responses need to reference specific support information.
+
+📈 Potential Applications
+
+The architecture can be adapted for:
 
 E-commerce customer support
 SaaS platforms
-Banking support
-Technical support desks
-Subscription-based services
+Technical support
+Subscription services
 Product support
 Automated help desks
+Customer-retention workflows
+🔮 Future Improvements
+
+Possible extensions include:
+
+Multi-turn conversation memory
+Larger customer knowledge bases
+Automated ticket creation
+CRM integration
+Human-agent handoff
+Support analytics dashboard
+Automatic ticket prioritization
+Multilingual customer support
+Voice-based customer support
+Production deployment and monitoring
 📚 Concepts Demonstrated
 
-This project demonstrates practical implementation of:
+This project demonstrates practical application of:
 
+Artificial Intelligence
+Machine Learning
 Natural Language Processing
+Large Language Models
+Retrieval-Augmented Generation
+Knowledge Retrieval
 Intent Classification
 Sentiment Analysis
 Emotion Detection
-Zero-shot Classification
-Large Language Model APIs
-AI Response Generation
-REST APIs
+Churn-Risk Detection
+Prompt Engineering
+Context-Aware Response Generation
+Hugging Face Transformers
+REST API Development
 FastAPI
 Streamlit
-API Authentication
-Environment Variable Management
 AI-based Customer Support Automation
-👩‍💻 Author
+⭐ Project Highlights
 
+An AI-powered customer support agent combining Hugging Face NLP models, RAG, and LLM-based response generation to understand customer intent, analyze sentiment, detect churn signals, retrieve relevant knowledge, and generate context-aware support responses.
+
+👩‍💻 Author
 Anshika Shukla
 
 Electronics & Communication Engineering
 Banasthali University
 
-Areas of Interest
+Interests
 Artificial Intelligence
 Machine Learning
 Natural Language Processing
+Generative AI
+Retrieval-Augmented Generation
 Edge AI
-Computer Vision
 Intelligent Systems
-⭐ Project Highlights
-
-AI-powered customer support system combining NLP-based intent detection, sentiment analysis, churn-signal detection, AI response generation, and automated support routing through a FastAPI + Streamlit architecture.
-
 
 ### One important correction
 
